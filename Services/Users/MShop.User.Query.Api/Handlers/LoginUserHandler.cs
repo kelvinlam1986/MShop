@@ -4,6 +4,7 @@ using MShop.Infrastructure.Event.User;
 using MShop.User.DataProvider.Services;
 using MShop.User.DataProvider.Extensions;
 using MShop.Infrastructure.Security;
+using MShop.Infrastructure.Authentication;
 
 namespace MShop.User.Query.Api.Handlers
 {
@@ -11,32 +12,36 @@ namespace MShop.User.Query.Api.Handlers
     {
         private readonly IUserService _userService;
         private readonly IEncrypter _encrypter;
+        private readonly IAuthenticationHandler _authenticationHandler;
 
         public LoginUserHandler(
             IUserService userService,
-            IEncrypter encrypter)
+            IEncrypter encrypter,
+            IAuthenticationHandler authenticationHandler)
         {
             _userService = userService;
             _encrypter = encrypter;
+            _authenticationHandler = authenticationHandler;
         }
 
         public async Task Consume(ConsumeContext<LoginUser> context)
         {
+            var token = new JwtAuthToken();
+
             var user = await _userService.GetUserByUsername(context.Message.Username);
             if (user == null)
             {
-                var emptyUserCreated = new UserCreated();
-                await context.RespondAsync<UserCreated>(emptyUserCreated);
+                await context.RespondAsync<JwtAuthToken>(token);
             }
 
             var isAllowed = user.ValidatePassword(context.Message.Password, _encrypter);
             if (isAllowed == false)
             {
-                var emptyUserCreated = new UserCreated();
-                await context.RespondAsync<UserCreated>(emptyUserCreated);
+                await context.RespondAsync<JwtAuthToken>(token);
             }
 
-            await context.RespondAsync<UserCreated>(user);
+            token = _authenticationHandler.Create(user.UserId);
+            await context.RespondAsync<JwtAuthToken>(token);
         }
     }
 }

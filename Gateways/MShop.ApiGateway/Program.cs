@@ -1,4 +1,5 @@
 using MassTransit;
+using MShop.Infrastructure.Authentication;
 using MShop.Infrastructure.EventBus;
 
 namespace MShop.ApiGateway
@@ -10,6 +11,7 @@ namespace MShop.ApiGateway
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddJwt(builder.Configuration);
 
             builder.Services.AddControllers();
             builder.Services.AddRabbitMq(builder.Configuration);

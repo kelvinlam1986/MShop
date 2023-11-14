@@ -1,4 +1,6 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MShop.Infrastructure.Command.Product;
 using MShop.Infrastructure.Event.Product;
@@ -28,6 +30,7 @@ namespace MShop.ApiGateway.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Add([FromBody] CreateProduct product)
         {
             var uri = new Uri("rabbitmq://localhost/create_product");

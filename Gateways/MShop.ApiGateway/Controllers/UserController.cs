@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using MShop.Infrastructure.Authentication;
 using MShop.Infrastructure.Command.Product;
 using MShop.Infrastructure.Command.User;
 using MShop.Infrastructure.Event.User;
@@ -34,7 +35,7 @@ namespace MShop.ApiGateway.Controllers
         [Route("[Action]")]
         public async Task<ActionResult> Login([FromForm] LoginUser loginUser)
         {
-            var userResponse = await _loginRequestClient.GetResponse<UserCreated>(loginUser);
+            var userResponse = await _loginRequestClient.GetResponse<JwtAuthToken>(loginUser);
             return Accepted(userResponse.Message);
 
         }

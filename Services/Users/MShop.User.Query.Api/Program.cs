@@ -5,11 +5,13 @@ using MShop.User.DataProvider.Repositories;
 using MShop.User.DataProvider.Services;
 using MShop.User.Query.Api.Handlers;
 using MassTransit;
+using MShop.Infrastructure.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMongoDb(builder.Configuration);
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEncrypter, Encrypter>();
@@ -34,6 +36,8 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddJwt(builder.Configuration);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
