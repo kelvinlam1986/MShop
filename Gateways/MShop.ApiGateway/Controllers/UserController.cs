@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MShop.Infrastructure.Command.Product;
 using MShop.Infrastructure.Command.User;
+using MShop.Infrastructure.Event.User;
 
 namespace MShop.ApiGateway.Controllers
 {
@@ -10,10 +11,12 @@ namespace MShop.ApiGateway.Controllers
     public class UserController : ControllerBase
     {
         private readonly IBusControl _bus;
+        private readonly IRequestClient<LoginUser> _loginRequestClient;
 
-        public UserController(IBusControl bus)
+        public UserController(IBusControl bus, IRequestClient<LoginUser> loginRequestClient)
         {
             _bus = bus;
+            _loginRequestClient = loginRequestClient;
         }
 
         [HttpPost]
@@ -25,6 +28,15 @@ namespace MShop.ApiGateway.Controllers
             await endpoint.Send(user);
 
             return Accepted("User Created");
+        }
+
+        [HttpPost]
+        [Route("[Action]")]
+        public async Task<ActionResult> Login([FromForm] LoginUser loginUser)
+        {
+            var userResponse = await _loginRequestClient.GetResponse<UserCreated>(loginUser);
+            return Accepted(userResponse.Message);
+
         }
     }
 }

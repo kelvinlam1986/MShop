@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MShop.Infrastructure.Command.User;
 using MShop.Infrastructure.Query;
 
 namespace MShop.Infrastructure.EventBus
@@ -24,6 +25,7 @@ namespace MShop.Infrastructure.EventBus
                     });
                 }));
                 x.AddRequestClient<GetProductById>();
+                x.AddRequestClient<LoginUser>();
             });
 
             return services;

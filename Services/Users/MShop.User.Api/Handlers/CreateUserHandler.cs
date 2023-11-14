@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using MShop.Infrastructure.Command.User;
-using MShop.User.Api.Services;
+using MShop.User.DataProvider.Services;
 
 namespace MShop.User.Api.Handlers
 {
@@ -16,7 +16,6 @@ namespace MShop.User.Api.Handlers
         public async Task Consume(ConsumeContext<CreateUser> context)
         {
             var createdUser = await _userService.AddUser(context.Message);
-
         }
     }
 }

@@ -2,9 +2,10 @@ using GreenPipes;
 using MassTransit;
 using MShop.Infrastructure.EventBus;
 using MShop.Infrastructure.Mongo;
+using MShop.Infrastructure.Security;
 using MShop.User.Api.Handlers;
-using MShop.User.Api.Repositories;
-using MShop.User.Api.Services;
+using MShop.User.DataProvider.Repositories;
+using MShop.User.DataProvider.Services;
 
 namespace MShop.User.Api
 {
@@ -18,6 +19,7 @@ namespace MShop.User.Api
             builder.Services.AddMongoDb(builder.Configuration);
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IEncrypter, Encrypter>();
             builder.Services.AddScoped<CreateUserHandler>();
 
             var rabbitOptions = new RabbitMqOptions();
